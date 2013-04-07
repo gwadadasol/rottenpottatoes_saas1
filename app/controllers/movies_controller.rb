@@ -1,5 +1,24 @@
 class MoviesController < ApplicationController
 
+  #def initialize
+  #  @release_date_hilite = Hash.new
+  #  @title_hilite = Hash.new
+  #  super
+  #end
+
+  def sorting_column
+    @sorting_column
+  end
+
+  def hilite_column(column_name)
+    #if column_name.to_s.eql? @sorting_column
+    # return "test"
+    #['class' => 'hilite']
+    #else
+    #  {}
+    #end
+  end
+
   def show
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID
@@ -7,14 +26,35 @@ class MoviesController < ApplicationController
   end
 
   def index
-    format  = params[:format]
-    p "-------------"
-    p params.to_s
-    if !format.nil?
-      @movies = Movie.order(format)
+    # default value is empty
+    if @release_date_hilite.nil? ; @release_date_hilite= Hash.new;end
+    if @title_hilite.nil?; @title_hilite = Hash.new; end
+
+    #solrt colum in the variable 'sort'
+    column  = params[:sort]
+
+    if !column.nil?
+      @movies = Movie.order(column)
+
+      if column.eql? "title"
+        # sorting the title column
+        #highlight the title column header
+        @title_hilite = Hash['class' => 'hilite']
+
+        # normal release date column header
+        @release_date_hilite = Hash[]
+      else
+        #sort by release date column
+
+        #highlight release date column header
+        @release_date_hilite = Hash['class' => 'hilite']
+
+        # normal title column header
+        @title_hilite = Hash[]
+      end
     else
       @movies = Movie.all
-      end
+    end
   end
 
   def new
