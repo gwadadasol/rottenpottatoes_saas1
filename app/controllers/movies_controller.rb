@@ -75,7 +75,7 @@ class MoviesController < ApplicationController
     if ! selected_ratings.nil?
       @all_ratings_status = selected_ratings
     elsif iscommit
-      @all_ratings_status.clear
+      all_ratings_status.clear
       else
       @all_ratings_status = {'G' => "1" , 'PG' => "1",'PG-13'=> "1" , 'R' => "1"}
 
