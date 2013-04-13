@@ -1,7 +1,7 @@
 %h1 Create New Movie
 
-= form_tag movies_path({:sort => session[:sort], :ratings => session[:ratings]}) do
-
+= form_tag movies_path do
+  = hidden_field_tag 'sort', session[:sort]
   = label :movie, :title, 'Title'
   = text_field :movie, 'title'
 
