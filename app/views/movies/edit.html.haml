@@ -2,7 +2,7 @@
 
 %h1 Edit Existing Movie
 
-= form_tag movie_path(@movie), :method => :put do
+= form_tag movie_path({:ratings => session[:ratings], :sort => session[:sort]}), :method => :put do
 
   = label :movie, :title, 'Title'
   = text_field :movie, 'title'
