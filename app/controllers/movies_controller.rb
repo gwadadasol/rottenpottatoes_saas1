@@ -1,10 +1,34 @@
 class MoviesController < ApplicationController
 
-  #def initialize
-  #  @release_date_hilite = Hash.new
-  #  @title_hilite = Hash.new
-  #  super
-  #end
+
+  helper_method :all_ratings_status, :all_ratings, :sorting_column, :title_hilite, :release_date_hilite
+
+  def initialize
+    @all_ratings #Movie.all_ratings
+    # @all_ratings_status = {'G' => true, 'PG' => true ,'PG-13'=> true , 'R' => true}
+    #selected_ratings = params[:ratings]
+    #p selected_ratings
+    super
+  end
+
+  def all_ratings_status
+    if @all_ratings_status.nil?
+      @all_ratings_status = {'G' => "1" , 'PG' => "1",'PG-13'=> "1" , 'R' => "1"}
+    end
+    @all_ratings_status
+  end
+
+  def selected_ratings_for_sorting
+    @all_ratings_status.keys
+  end
+
+
+  def all_ratings
+    if @all_ratings.nil?
+      @all_ratings= ['G','PG','PG-13','R']
+    end
+    @all_ratings
+  end
 
   def sorting_column
     @sorting_column
@@ -19,6 +43,22 @@ class MoviesController < ApplicationController
     #end
   end
 
+  def title_hilite
+    p "@title_hilite.nil? >> " + @title_hilite.nil?.to_s
+    if @title_hilite.nil? == true
+      p "@title_hilite is NIL"
+      @title_hilite = {}
+    end
+  end
+
+  def  release_date_hilite
+    p " @release_date_hilite.nil? >> :" +  @release_date_hilite.nil?.to_s
+    if @release_date_hilite.nil? == true
+      p "@release_date_hilite is NIL"
+      @release_date_hilite= {}
+    end
+  end
+
   def show
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID
@@ -26,15 +66,32 @@ class MoviesController < ApplicationController
   end
 
   def index
-    # default value is empty
-    if @release_date_hilite.nil? ; @release_date_hilite= Hash.new;end
-    if @title_hilite.nil?; @title_hilite = Hash.new; end
+
+
+    #save the ratings
+    selected_ratings = params[:ratings]
+    iscommit = params.key? "commit"
+
+    if ! selected_ratings.nil?
+      @all_ratings_status = selected_ratings
+    elsif iscommit
+      @all_ratings_status.clear
+      else
+      @all_ratings_status = {'G' => "1" , 'PG' => "1",'PG-13'=> "1" , 'R' => "1"}
+
+    end
+
+    p "-----------------"
 
     #solrt colum in the variable 'sort'
     column  = params[:sort]
 
-    if !column.nil?
-      @movies = Movie.order(column)
+    p "sorting column : " + sorting_column.to_s
+
+    if !column.nil? && !column.empty?
+      p "Column is NOT nil"
+      @sorting_column = column
+      @movies = Movie.where("rating IN (?) ",selected_ratings_for_sorting).order(@sorting_column)
 
       if column.eql? "title"
         # sorting the title column
@@ -42,7 +99,7 @@ class MoviesController < ApplicationController
         @title_hilite = Hash['class' => 'hilite']
 
         # normal release date column header
-        @release_date_hilite = Hash[]
+        @release_date_hilite = {}
       else
         #sort by release date column
 
@@ -50,11 +107,19 @@ class MoviesController < ApplicationController
         @release_date_hilite = Hash['class' => 'hilite']
 
         # normal title column header
-        @title_hilite = Hash[]
+        @title_hilite = {}
       end
     else
-      @movies = Movie.all
+      p "column IS NIL"
+      @title_hilite = {}
+      @release_date_hilite = {}
+      @movies = Movie.where("rating IN (?) ", selected_ratings_for_sorting)
     end
+
+    p ">> title hilite -> " + @title_hilite.to_s + " >> " + @title_hilite.nil?.to_s
+    p ">> release_date_hilite -> " + @release_date_hilite.to_s + " >> " + @release_date_hilite.nil?.to_s
+
+
   end
 
   def new
