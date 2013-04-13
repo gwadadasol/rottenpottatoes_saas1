@@ -74,8 +74,8 @@ class MoviesController < ApplicationController
       selected_ratings = session[:ratings]
     end
 
-    p ">> params: " + params.to_s
-    p ">> session: " + session.to_s
+    #p ">> params: " + params.to_s
+    #p ">> session: " + session.to_s
 
     iscommit = params.key? "ratings_submit"
 
@@ -87,7 +87,7 @@ class MoviesController < ApplicationController
     end
     issorted = params.key? "sort"
 
-    p ">> selected_ratings: " + selected_ratings.to_s
+    #p ">> selected_ratings: " + selected_ratings.to_s
     if ! selected_ratings.nil?
       # save the rating
       @all_ratings_status = selected_ratings
@@ -144,7 +144,7 @@ class MoviesController < ApplicationController
     end
 
     #save the data in the session
-    p ">> @all_ratings_statu: " + @all_ratings_status.to_s
+    #p ">> @all_ratings_statu: " + @all_ratings_status.to_s
     session[:ratings] = @all_ratings_status
 
   end
