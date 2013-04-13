@@ -68,14 +68,26 @@ class MoviesController < ApplicationController
     # -----------------
 
     #save the ratings
-    selected_ratings = params[:ratings]
+    if params.key? "ratings"
+      selected_ratings = params[:ratings]
+    elsif session.key? "ratings"
+      selected_ratings = session[:ratings]
+    end
+
+    p ">> params: " + params.to_s
+    p ">> session: " + session.to_s
+
     iscommit = params.key? "ratings_submit"
 
     # get the name of the column to sort
-    column  = params[:sort]
+    if params.key? "sort"
+      column  = params[:sort]
+    elsif session.key? "sort"
+      column = session[:sort]
+    end
     issorted = params.key? "sort"
 
-
+    p ">> selected_ratings: " + selected_ratings.to_s
     if ! selected_ratings.nil?
       # save the rating
       @all_ratings_status = selected_ratings
@@ -119,6 +131,9 @@ class MoviesController < ApplicationController
         # normal title column header
         @title_hilite = {}
       end
+
+      #save the column in the session
+      session[:sort] = @sorting_column
     else
       # unset the hightling
       @title_hilite = {}
@@ -127,6 +142,11 @@ class MoviesController < ApplicationController
       #run the query
       @movies = Movie.where("rating IN (?) ", selected_ratings_for_sorting)
     end
+
+    #save the data in the session
+    p ">> @all_ratings_statu: " + @all_ratings_status.to_s
+    session[:ratings] = @all_ratings_status
+
   end
 
   def new
