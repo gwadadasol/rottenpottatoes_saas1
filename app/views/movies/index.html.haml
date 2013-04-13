@@ -9,7 +9,7 @@
     = rating
     - p all_ratings_status.key? rating
     = check_box_tag "ratings[#{rating}]", "1", all_ratings_status.key?(rating)
-  = submit_tag 'Refresh', :name => "ratings_submit"
+  = submit_tag 'Refresh', :name => "ratings_submit",:id => "ratings_submit"
 
 %table#movies
   %thead
