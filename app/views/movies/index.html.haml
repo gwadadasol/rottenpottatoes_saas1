@@ -1,13 +1,10 @@
 -#  This file is app/views/movies/index.html.haml
 
 %h1 All Movies
-- p "titi--"  + sorting_column.to_s + "++"
 = form_tag  movies_path({:sort => sorting_column.to_s, :ratingss => @all_ratings_status }), :name => "ratings_form" , :id => "ratings_form",  :method => :get do 
-  - p " >> " + all_ratings_status.to_s
   = hidden_field_tag 'sort', sorting_column
   - all_ratings.each do |rating|
     = rating
-    - p all_ratings_status.key? rating
     = check_box_tag "ratings[#{rating}]", "1", all_ratings_status.key?(rating)
   = submit_tag 'Refresh', :name => "ratings_submit",:id => "ratings_submit"
 

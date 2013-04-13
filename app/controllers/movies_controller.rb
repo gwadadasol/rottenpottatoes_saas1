@@ -44,17 +44,13 @@ class MoviesController < ApplicationController
   end
 
   def title_hilite
-    p "@title_hilite.nil? >> " + @title_hilite.nil?.to_s
     if @title_hilite.nil? == true
-      p "@title_hilite is NIL"
       @title_hilite = {}
     end
   end
 
   def  release_date_hilite
-    p " @release_date_hilite.nil? >> :" +  @release_date_hilite.nil?.to_s
     if @release_date_hilite.nil? == true
-      p "@release_date_hilite is NIL"
       @release_date_hilite= {}
     end
   end
@@ -67,32 +63,46 @@ class MoviesController < ApplicationController
 
   def index
 
+    # -----------------
+    # RATING MANAGEMENT
+    # -----------------
 
     #save the ratings
     selected_ratings = params[:ratings]
-    iscommit = params.key? "commit"
+    iscommit = params.key? "ratings_submit"
+
+    # get the name of the column to sort
+    column  = params[:sort]
+    issorted = params.key? "sort"
+
 
     if ! selected_ratings.nil?
+      # save the rating
       @all_ratings_status = selected_ratings
-    elsif iscommit
-      all_ratings_status.clear
-      else
-      @all_ratings_status = {'G' => "1" , 'PG' => "1",'PG-13'=> "1" , 'R' => "1"}
 
+      # the rating is empty
+    elsif iscommit
+      # because the user unchecked all the rating
+      all_ratings_status.clear
+    elsif issorted
+      #because the user uncked all the rating AND sorted one column
+      @all_ratings_status = {}
+    else
+      # because it is the first connection
+      @all_ratings_status = {'G' => "1" , 'PG' => "1",'PG-13'=> "1" , 'R' => "1"}
     end
 
-    p "-----------------"
-
-    #solrt colum in the variable 'sort'
+    # ---------------
+    # SORT MANAGEMENT
+    # ---------------
+    # get the name of the column to sort
     column  = params[:sort]
 
-    p "sorting column : " + sorting_column.to_s
-
+    # Column selected
     if !column.nil? && !column.empty?
-      p "Column is NOT nil"
       @sorting_column = column
       @movies = Movie.where("rating IN (?) ",selected_ratings_for_sorting).order(@sorting_column)
-
+      # set the hightlighting
       if column.eql? "title"
         # sorting the title column
         #highlight the title column header
@@ -110,16 +120,13 @@ class MoviesController < ApplicationController
         @title_hilite = {}
       end
     else
-      p "column IS NIL"
+      # unset the hightling
       @title_hilite = {}
       @release_date_hilite = {}
+
+      #run the query
       @movies = Movie.where("rating IN (?) ", selected_ratings_for_sorting)
     end
-
-    p ">> title hilite -> " + @title_hilite.to_s + " >> " + @title_hilite.nil?.to_s
-    p ">> release_date_hilite -> " + @release_date_hilite.to_s + " >> " + @release_date_hilite.nil?.to_s
-
-
   end
 
   def new
