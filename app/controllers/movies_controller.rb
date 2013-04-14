@@ -80,12 +80,15 @@ class MoviesController < ApplicationController
     iscommit = params.key? "ratings_submit"
 
     # get the name of the column to sort
+    # column  = params[:sort]
+    issorted = false
     if params.key? "sort"
       column  = params[:sort]
+      issorted = true
     elsif session.key? "sort"
       column = session[:sort]
+      issorted = true
     end
-    issorted = params.key? "sort"
 
     #p ">> selected_ratings: " + selected_ratings.to_s
     if ! selected_ratings.nil?
@@ -96,19 +99,20 @@ class MoviesController < ApplicationController
     elsif iscommit
       # because the user unchecked all the rating
       all_ratings_status.clear
+
     elsif issorted
       #because the user uncked all the rating AND sorted one column
       @all_ratings_status = {}
+
     else
       # because it is the first connection
       @all_ratings_status = {'G' => "1" , 'PG' => "1",'PG-13'=> "1" , 'R' => "1"}
+
     end
 
     # ---------------
     # SORT MANAGEMENT
     # ---------------
-    # get the name of the column to sort
-    column  = params[:sort]
 
     # Column selected
     if !column.nil? && !column.empty?
