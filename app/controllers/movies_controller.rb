@@ -68,14 +68,15 @@ class MoviesController < ApplicationController
     # -----------------
 
     #save the ratings
-    if params.key? "ratings"
+    if (params.key?("ratings") && ( params[:ratings].nil? == false))
       selected_ratings = params[:ratings]
+      session[:ratings] = params[:ratings]
     elsif session.key? "ratings"
       selected_ratings = session[:ratings]
     end
 
-    #p ">> params: " + params.to_s
-    #p ">> session: " + session.to_s
+    p ">> selected_rating :" + selected_ratings.to_s
+
 
     iscommit = params.key? "ratings_submit"
 
@@ -96,17 +97,19 @@ class MoviesController < ApplicationController
       @all_ratings_status = selected_ratings
 
       # the rating is empty
-    elsif iscommit
+      # >> NOT POSSIBLE ANY MORE: in case the user unselects all ratings
+      # one uses the values saved in the session
+    #elsif iscommit
       # because the user unchecked all the rating
-      all_ratings_status.clear
+      # all_ratings_status.clear
 
-    elsif issorted
-      #because the user uncked all the rating AND sorted one column
-      @all_ratings_status = {}
+    # elsif issorted
+      # because the user uncked all the rating AND sorted one column
+      # @all_ratings_status = {}
 
-    else
+    # else
       # because it is the first connection
-      @all_ratings_status = {'G' => "1" , 'PG' => "1",'PG-13'=> "1" , 'R' => "1"}
+      # @all_ratings_status = {'G' => "1" , 'PG' => "1",'PG-13'=> "1" , 'R' => "1"}
 
     end
 
